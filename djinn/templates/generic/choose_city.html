@@ -1,0 +1,19 @@
+<div class="modal" id="choose_city">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="choose-cancel" type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Выберите город:</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <ul class="nav nav-list">
+                        {% for i in cities %}
+                            <li><a class="text-center" href="{% url 'choose_city' i.id %}">{{ i }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

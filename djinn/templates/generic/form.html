@@ -1,0 +1,16 @@
+{% csrf_token %}
+{% for field in form %}
+    <div class="form-group">
+        <div class="col-lg-8 col-lg-offset-2">
+            {{ field }}
+            {% for error in field.errors %}
+                <p class="text-danger">* {{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endfor %}
+<div class="col-lg-8 col-lg-offset-2">
+    {% for error in form.non_field_errors %}
+        <p class="text-danger">* {{ error }}</p>
+    {% endfor %}
+</div>

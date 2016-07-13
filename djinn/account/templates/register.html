@@ -1,0 +1,38 @@
+{% extends 'template.html' %}
+{% load staticfiles%}
+
+{% block head %}
+    <title> Джинн - сервис для поиска исполнителя для вашего задания</title>
+    <meta name="description" content="Джинн - это онлайн-ресурс, который позволяет оставлять свои заказы, а также исполнять заказы других">
+    <meta name="keywords" content="заказать услугу, найти подработку, исполнитель, выполнить работу, услуги, категории, задания, фриланс, курьерские услуги, ремонт, грузоперевозки">
+
+{% endblock %}
+
+{% block register %}
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-login">
+            <div class="panel-heading">
+                <p>Регистрация</p>
+                <hr>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <form class="form-horizontal" action="{% url 'register' %}" method="post">
+                            {% include 'generic/form.html' %}
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-6 col-sm-offset-3">
+                                        <input type="submit" name="register-submit" id="register-submit" class="form-control btn btn-auth" value="Зарегистрироваться">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock%}

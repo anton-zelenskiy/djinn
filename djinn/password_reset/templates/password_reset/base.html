@@ -1,0 +1,23 @@
+{% extends "template.html" %}
+{% load i18n %}
+{% block head_title %} <title> {% block title %} {% endblock %} </title> {% endblock %}
+
+{% block password_recovery %}
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="panel panel-login">
+                <div class="panel-heading">
+                    <h4> {% trans "Password recovery" %} </h4>
+                    <hr>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            {% block content %} {% endblock %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

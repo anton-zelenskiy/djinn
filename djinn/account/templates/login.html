@@ -1,0 +1,36 @@
+{% extends 'template.html' %}
+{% block title %} Вход {% endblock %}
+{% block login %}
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-login">
+            <div class="panel-heading">
+                <p>Вход</p>
+                <hr>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <form class="form-horizontal" action="{% url 'login' %}" method="post">
+                            {% include 'generic/form.html' %}
+                            <div class="form-group">
+                                <div class="col-lg-12">
+                                    <div class="text-center"> <a href="{% url 'password_reset_recover' %}" class="btn btn-link">Забыли пароль?</a> </div>
+                                    <div class="text-center"> <a href="{% url 'register' %}" class="btn btn-link">Зарегистрироваться!</a> </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-6 col-sm-offset-3">
+                                        <input type="submit" class="form-control btn btn-auth" value="Вход">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock%}

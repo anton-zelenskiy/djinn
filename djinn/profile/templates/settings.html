@@ -1,0 +1,432 @@
+{% extends 'template.html' %}
+{% load staticfiles%}
+
+{% block head %} <title> Личный кабинет </title> {% endblock %}
+
+{% block statics %}
+    <link rel="stylesheet" href="{% static 'dist/css/bootstrap-datepicker.css' %}"  media="screen">
+
+    <script src="{% static 'dist/js/bootstrap-datepicker.js' %}"></script>
+    <script src="{% static 'jquery.maskedinput.js' %}"></script>
+
+    <style>
+    .avatar {
+        margin-top: 30px;
+        margin-right: 30px;
+        margin-left: 30px;
+    }
+    .profile-info {
+        margin-top: 40px;
+        margin-left: 10px;
+    }
+    .label-left-text {
+        text-align: left !important;
+    }
+
+
+    .contact-info p{
+        font-size: 20px;
+    }
+    .contact-data {
+        margin-bottom: 20px;
+    }
+
+    .border-color {
+        border-color: #28a4c9;
+    }
+    </style>
+{% endblock %}
+
+{% block settings %}
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="row avatar">
+                        <img src="{% static 'img/profile/initial_avatar.jpg' %}" alt="" class="img-responsive">
+                    </div>
+                    <div class="row">
+                        <p class="text-center"><a href="#photo-edit" data-toggle="modal" class="btn btn-link">Изменить фото</a></p>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="row profile-info">
+                        <form action="{% url 'profile' %}" class="form-horizontal" method="post">
+                        {% csrf_token %}
+                            <fieldset>
+                                {% for field in form %}
+                                    {% if field.name == 'birth_date' %}
+                                        <div class="form-group">
+                                        <label class="col-lg-4 control-label label-left-text" for="id_{{ field.name }}">{{ field.label }}</label>
+                                            <div class="col-lg-8">
+                                                <div class="input-group">
+                                                    {{ field }}
+                                                    <div class="input-group-addon">
+                                                        <span class="glyphicon glyphicon-th"></span>
+                                                    </div>
+                                                    {% for error in field.errors %}
+                                                        <p class="text-danger">* {{ error }}</p>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="form-group">
+                                            <label class="col-lg-4 control-label label-left-text" for="id_{{ field.name }}">{{ field.label }}</label>
+                                            <div class="col-lg-8">
+                                                {{ field }}
+                                                {% for error in field.errors %}
+                                                    <p class="text-danger">* {{ error }}</p>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                                <div class="form-group">
+                                    <div class="col-lg-4 col-lg-offset-4">
+                                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="row">
+                <div class="col-lg-10 col-lg-offset-1">
+                    <h3>Контактные данные</h3>
+                    <div class="row contact-data">
+                        <div class="col-lg-4">
+                            <p>Email</p>
+                        </div>
+                        <div class="col-lg-8">
+                            <span class="email-field">
+                                {% if not email %}
+                                    Не заполнено...
+                                {% else %}
+                                    {{ email }}
+                                {% endif %}
+                            </span>
+                            <a href="#email-edit" data-toggle="modal"><i class="glyphicon glyphicon-pencil"></i></a>
+                        </div>
+                    </div>
+                    <hr class="border-color">
+                    <div class="row contact-data">
+                        <div class="col-lg-4">
+                            <p>Телефон</p>
+                        </div>
+                        <div class="col-lg-8">
+                            <span class="phone-field">
+                                {% if not phone %}
+                                    Не заполнено...
+                                {% else %}
+                                    {{ phone }}
+                                {% endif %}
+                            </span>
+                            <a href="#phone-edit" data-toggle="modal"><i class="glyphicon glyphicon-pencil"></i></a>
+                        </div>
+                    </div>
+                    <hr class="border-color">
+                    <div class="row contact-data">
+                        <div class="col-lg-4">
+                            <p>Skype</p>
+                        </div>
+                        <div class="col-lg-8">
+                            <span class="phone-skype">
+                                {% if not skype %}
+                                    Не заполнено...
+                                {% else %}
+                                    {{ skype }}
+                                {% endif %}
+                            </span>
+                            <a href="#skype-edit" data-toggle="modal"><i class="glyphicon glyphicon-pencil"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="phone-edit">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button id="phone-cancel" type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Изменение номера телефона</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="phone-update" action="" method="post" class="form-horizontal">
+                        <fieldset>
+                        {% for field in phone_form %}
+                            <div class="form-group">
+                                <label class="col-lg-4 control-label label-left-text" for="id_{{ field.name }}">{{ field.label }}</label>
+                                <div class="col-lg-8">
+                                    {{ field }}
+                                    {% for error in field.errors %}
+                                        <p class="text-danger">* {{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="row" style="margin-top:20px; margin-bottom: 10px;">
+                            <div class="col-lg-10 col-lg-offset-1">
+                                <div class="text-danger text-center" id="error-phone"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                                <div class="col-lg-4 col-lg-offset-4">
+                                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal" id="skype-edit">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button id="skype-cancel" type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Изменение аккаунта Skype</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="skype-update" action="" method="post" class="form-horizontal">
+                        <fieldset>
+                        {% for field in skype_form %}
+                            <div class="form-group">
+                                <label class="col-lg-4 control-label label-left-text" for="id_{{ field.name }}">{{ field.label }}</label>
+                                <div class="col-lg-8">
+                                    {{ field }}
+                                    {% for error in field.errors %}
+                                        <p class="text-danger">* {{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="row" style="margin-top:20px; margin-bottom: 10px;">
+                            <div class="col-lg-10 col-lg-offset-1">
+                                <div class="text-danger text-center" id="error-skype"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                                <div class="col-lg-4 col-lg-offset-4">
+                                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal" id="email-edit">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button id="email-cancel" type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Изменение Email</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="email-update" action="" method="post" class="form-horizontal">
+                        <fieldset>
+                        {% for field in email_form %}
+                            <div class="form-group">
+                                <label class="col-lg-4 control-label label-left-text" for="id_{{ field.name }}">{{ field.label }}</label>
+                                <div class="col-lg-8">
+                                    {{ field }}
+                                    {% for error in field.errors %}
+                                        <p class="text-danger">* {{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="row" style="margin-top:20px; margin-bottom: 10px;">
+                            <div class="col-lg-10 col-lg-offset-1">
+                                <div class="text-danger text-center" id="error-email"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-4 col-lg-offset-4">
+                                <button type="submit" class="btn btn-primary">Сохранить</button>
+                            </div>
+                        </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="photo-edit">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button id="photo-cancel" type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Изменение фотографии профиля</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row avatar">
+                        <div class="col-lg-8 col-lg-offset-2">
+                            <img src="{% static 'img/profile/initial_avatar.jpg' %}" alt="" class="img-responsive">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <form id="photo-upload" action="" method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <div class="col-lg-8">
+                                    <input type="file" class="form-control" name="avatar">
+                                </div>
+                                <div class="col-lg-4">
+                                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $(function() {
+        $('#datepicker').datepicker({
+            language: "ru",
+            autoclose: true,
+            orientation: "bottom",
+            todayBtn: "linked",
+            todayHighlight: true
+        });
+    });
+
+    jQuery(function($){
+        $("#id_phone").mask("+7 (999) 999-9999");
+    });
+    </script>
+
+    <script type="text/javascript">
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": getCookie("csrftoken") }
+        });
+
+        $(document).ready(function() {
+            $("#phone-update").on("submit", function (e) {
+                e.preventDefault();
+                var $phone =  $(this).find('#id_phone').val();
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'phone_update' %}",
+                    data: {phone: $phone},
+
+                    success: function(data) {
+                        if (data.status == '1') {
+                            $('#phone-edit').modal('hide');
+                            window.parent.location.reload();
+                        } else {
+                            $("#error-phone").html(data.error);
+                        }
+                    },
+                    failure: function(){
+                        $('#error-phone').html('Неизвестная ошибка.');
+                    }
+                });
+            });
+            $("#phone-cancel").on("click", function (e) {
+                $("#error-phone").html('');
+                document.getElementById("id_phone").value = "";
+                $('#phone-edit').modal('hide');
+            });
+            $('#phone-edit').on('hidden.bs.modal', function (e) {
+                document.getElementById("id_phone").value = "";
+                $("#error-phone").html('');
+            });
+
+            $("#skype-update").on("submit", function (e) {
+                e.preventDefault();
+                var $skype =  $(this).find('#id_skype').val();
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'skype_update' %}",
+                    data: {skype: $skype},
+
+                    success: function(data) {
+                        if (data.status == '1') {
+                            $('#skype-edit').modal('hide');
+                            window.parent.location.reload();
+                        } else {
+                            $("#error-skype").html(data.error);
+                        }
+                    },
+                    failure: function(){
+                        $('#error-skype').html('Неизвестная ошибка.');
+                    }
+                });
+            });
+            $("#skype-cancel").on("click", function (e) {
+                $("#error-skype").html('');
+                document.getElementById("id_skype").value = "";
+                $('#skype-edit').modal('hide');
+            });
+            $('#skype-edit').on('hidden.bs.modal', function (e) {
+                document.getElementById("id_skype").value = "";
+                $("#error-skype").html('');
+            });
+
+
+            $("#email-update").on("submit", function (e) {
+                e.preventDefault();
+                var $email =  $(this).find('#id_email').val();
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'email_update' %}",
+                    data: {email: $email},
+
+                    success: function(data) {
+                        if (data.status == '1') {
+                            $('#email-edit').modal('hide');
+                            window.parent.location.reload();
+                        } else {
+                            $("#error-email").html(data.error);
+                        }
+                    },
+                    failure: function(){
+                        $('#error-email').html('Неизвестная ошибка.');
+                    }
+                });
+            });
+            $("#email-cancel").on("click", function (e) {
+                $("#error-email").html('');
+                document.getElementById("id_email").value = "";
+                $('#email-edit').modal('hide');
+            });
+            $('#email-edit').on('hidden.bs.modal', function (e) {
+                document.getElementById("id_email").value = "";
+                $("#error-email").html('');
+            });
+        });
+    </script>
+
+{% endblock%}

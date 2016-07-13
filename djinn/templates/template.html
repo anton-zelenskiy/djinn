@@ -1,0 +1,74 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    {% block head %} {% endblock %}
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-yeti.css' %}"  media="screen">
+    <link rel="stylesheet" href="{% static 'css/submenu.css' %}"  media="screen">
+    <link rel="stylesheet" href="{% static 'css/bootsnipp.css' %}"  media="screen">
+    <link rel="stylesheet" href="{% static 'css/regauth_form.css' %}"  media="screen">
+    <link rel="stylesheet" href="{% static 'scroll_to_top/scroll_to_top.css' %}"  media="screen">
+
+    <script src="{% static 'jquery-2.2.3.js' %}"></script>
+    <script src="{% static 'bootstrap/dist/js/bootstrap.js' %}"></script>
+    <script src="{% static 'scroll_to_top/scroll_to_top.js' %}"></script>
+
+    {% block statics %} {% endblock %}
+
+    <style> /* style for footer position*/
+        html {
+            position: relative;
+            min-height: 100%;
+        }
+        body {
+            margin-bottom: 60px;
+        }
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            /* Set the fixed height of the footer here */
+            height: 60px;
+            background-color: #f5f5f5;
+        }
+
+    </style>
+</head>
+
+<body> <!-- style="background: #d3f0fc url(/static/img/bg.jpg) repeat top center;" -->
+    <div class="container">
+        {% include 'generic/navbar_fixed_top.html' %}
+
+        <div class="container" style="margin-top: 80px;">
+            {% block login %} {% endblock %}
+            {% block register %} {% endblock %}
+            {% block password_recovery %} {% endblock %}
+            {% block main %} {% endblock %}
+            {% block settings %} {% endblock %}
+            {% block employee %} {% endblock %}
+            {% block get_employee %} {% endblock %}
+        </div>
+
+        <!-- scroll_to_top feature (static/scroll_to_top) -->
+        <div class="scroll-top-wrapper ">
+        <span class="scroll-top-inner">
+            <span class="glyphicon glyphicon-arrow-up" style="line-height: inherit;"></span>
+        </span>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <p class="text-center">&copy Creators Team Corp Trademark 2015.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

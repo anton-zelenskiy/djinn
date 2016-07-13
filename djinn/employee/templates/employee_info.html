@@ -1,0 +1,60 @@
+{% extends 'template.html' %}
+{% load staticfiles%}
+
+{% block head %} <title> Исполнитель </title> {% endblock %}
+
+{% block statics %}
+    <style>
+
+    </style>
+{% endblock %}
+
+{% block get_employee %}
+    <div class="col-lg-10 col-lg-offset-1">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="row avatar">
+                    <img src="{% static 'img/profile/initial_avatar.jpg' %}" alt="" class="img-responsive center-block" style="width: 200px;">
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <p class="lead">{{ user_profile_data.first_name }} {{ user_profile_data.last_name }}</p>
+                        <p class="lead">{{ user_profile_data.get_age_and_postfix }}</p>
+                        <p class="lead">{{ user_profile_data.city }}</p>
+                    </div>
+                    <div class="col-lg-6">
+                        <p class="lead text-center">Средняя цена за услугу:</p>
+                        <p class="lead text-center">{{ employee_data.price }} <i class="glyphicon glyphicon-ruble"></i></p>
+                        <p class="text-center"><a class="btn btn-primary" href="">Предложить задание</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-10 col-lg-offset-1">
+                <h3>Мои специализации:</h3>
+                {% for category in employee_data.category.all %}
+                    <div class="panel panel-info">
+                        <div class="panel-heading"><h3 class="panel-title">{{ category }}</h3></div>
+                        <div class="panel-body">
+                        {% for subcategory in employee_data.subcategory.all|in_category:category %}
+                            <p>{{ subcategory }}</p>
+                        {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+    </div>
+
+    <script>
+        $(document).ready(function () {
+
+        });
+    </script>
+
+{% endblock%}

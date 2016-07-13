@@ -1,0 +1,4 @@
+.idea
+djinn/db.sqlite3
+*.mo
+*.py[cod]

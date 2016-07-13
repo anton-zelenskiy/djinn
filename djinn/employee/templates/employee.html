@@ -1,0 +1,152 @@
+{% extends 'template.html' %}
+{% load staticfiles%}
+
+{% block head %} <title> Исполнители </title> {% endblock %}
+
+{% block statics %}
+    <script src="{% static 'jsrender.js' %}"></script>
+    <style>
+    a.subcategories-link {
+        color: #5cb85c;
+        padding-left: 25px;
+    }
+
+    a.border-tree:hover {
+        background-color: #eeeeee !important;
+        border: 1px solid #eeeeee !important;
+        border-radius: 0.5em !important;
+    }
+
+    a.border-tree:active, a.border-tree:focus, a.border-tree:hover{
+        color: #000000 !important;
+        text-decoration: none !important;
+        font-weight: bold;
+    }
+
+    </style>
+{% endblock %}
+
+{% block employee %}
+    <div class="row">
+        <div class="col-lg-4" style="margin-top: 50px;">
+            <ul class="nav nav-list">
+                {% for item in categories %}
+                    <li>
+                        <span class="tree-toggler nav-header " id="{{ item.id }}">
+                            <a id="{{ item.id }}" data-cat-id="{{ item.id }}" class=" btn btn-link categories-link border-tree" href="#"> {{ item.category }} </a>
+                        </span>
+                        {% for sub in item.subcategory_set.all %}
+                            <ul class="nav nav-list tree" style="display: none;">
+                                <li>
+                                    <span><a data-sub-id="{{ sub.id }}" class="btn btn-link subcategories-link border-tree" href="#"> {{ sub }} </a></span>
+                                </li>
+                            </ul>
+                        {% endfor %}
+                    </li>
+                    <li class="divider"></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-lg-8">
+            <h3>Список исполнителей</h3>
+            <div id="employee-list"></div>
+        </div>
+    </div>
+
+    <script id="employees-ajax" type="text/x-jsrender">
+        (?for users?)
+            <div class="row">
+                <div class="col-lg-3">
+                    <img src="{% static 'img/profile/initial_avatar.jpg' %}" class="img-responsive" style="width: 140px; padding: 5px;">
+                </div>
+                <div class="col-lg-9">
+                    <div class="row">
+                        <a class="btn btn-link" href="/employee/get/(?:id?)" style="padding: 0 !important;">(?:first_name?) (?:last_name?)</a>
+                        <p>(?:age?)</p>
+
+                    </div>
+                    <div class="row" style="overflow-wrap: break-word; overflow: hidden; text-overflow: ellipsis;">
+                        <p> (?:description?) </p>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <button class="btn btn-primary btn-sm">Предложить задание</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+        (?/for?)
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            var opened = 'opened';
+            $('span.tree-toggler').click(function (event) {
+                if($(this).hasClass(opened)) {
+                    return;
+                }
+                $("ul.tree").hide();
+                $('span.tree-toggler').removeClass(opened);
+                $(this).parent().children('ul.tree').toggle(300);
+                $('#'+event.target.id).addClass(opened);
+            });
+
+
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            $.ajaxSetup({
+                headers: { "X-CSRFToken": getCookie("csrftoken") }
+            });
+
+
+            $.views.settings.delimiters("(?","?)"); //jsrender delimiters: std delims are conflicted with django syntax
+
+            var template = $.templates("#employees-ajax");
+
+            function ajaxRequest(dataToSend){
+                $.ajax({
+                    url: '{% url 'employee:employee' %}',
+                    dataType :'json',
+                    type: 'post',
+                    data : dataToSend,
+                    success: function(response) {
+                        var htmlOutput = template.render(response);
+                        $("#employee-list").html(htmlOutput);
+                        history.pushState('', '', response.url);
+                    }
+                });
+            }
+
+            var dataToSend = {status: 'all'};
+            ajaxRequest(dataToSend);
+
+            $('a.border-tree').click(function (event){
+                event.preventDefault();
+
+                var dataToSend = {}; // send category_id or subcategory_id
+                if($(this).attr('data-cat-id')) {
+                    dataToSend = {status: '', cat_id: $(this).attr('data-cat-id')};
+                }
+                if($(this).attr('data-sub-id')) {
+                    dataToSend = {status: '', sub_id: $(this).attr('data-sub-id')};
+                }
+                ajaxRequest(dataToSend);
+            });
+        });
+    </script>
+
+{% endblock%}
